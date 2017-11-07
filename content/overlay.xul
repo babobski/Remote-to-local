@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="less://komodo/skin/global/global.less" type="text/css"?>
+<?xml-stylesheet href="less://remoteToLocal/skin/remoteToLocal.less" type="text/css"?>
+<overlay id="remoteToLocal" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="chrome://remoteToLocal/content/overlay.js" />
+
+    <commandset id="allcommands">
+	  <command id="Tasks:openCurrentFileLocation" oncommand="extensions.remoteToLocal.openCurrentFileInFilezilla();"/>
+	  <command id="Tasks:syncWithFileZilla" oncommand="extensions.remoteToLocal.syncFolderWithFileZilla(this);"/>
+	  <command id="Tasks:openSettings" oncommand="extensions.remoteToLocal.openSettings();"/>
+    </commandset>
+
+    <menupopup id="popup_tools">
+      <menu id="menu_remoteToLocal" label="FileZilla">
+        <menupopup id="menu_remoteToLocal_popup">
+          <menuitem id="menu_remoteToLocal_file"
+                  label="Open current file location"
+                  observes="Tasks:openCurrentFileLocation"
+                  class="menu-iconic-wide" />
+		  <menuitem id="menu_remoteToLocal_settings"
+                  label="Open Settings"
+                  observes="Tasks:openSettings"
+                  class="menu-iconic-wide" />
+        </menupopup>
+      </menu>
+    </menupopup>
+
+    <menupopup id="editorContextMenu">
+      <menu id="menu_remoteToLocal_context" insertafter="editor-context-replace" label="FileZilla">
+          <menupopup id="menu_remoteToLocal_context_popup">
+            <menuitem id="menu_remoteToLocal_context_file"
+                    label="Open current file location"
+                    observes="Tasks:openCurrentFileLocation"
+                    class="menu-iconic-wide" />
+		  </menupopup>
+      </menu>
+    </menupopup>
+</overlay>

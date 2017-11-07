@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="less://komodo/skin/global/global.less" type="text/css"?>
+<?xml-stylesheet href="less://remoteToLocal/skin/remoteToLocal.less" type="text/css"?>
+<overlay id="remoteToLocalPlaces" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="chrome://remoteToLocal/content/overlay.js" />
+
+    <commandset id="allcommands">
+		<command id="Tasks:openCurrentFileLocation" oncommand="extensions.remoteToLocal.openCurrentFileInFilezilla();"/>
+		<command id="Tasks:syncWithFileZilla" oncommand="extensions.remoteToLocal.syncFolderWithFileZilla(this);"/>
+		<command id="Tasks:openSettings" oncommand="extensions.remoteToLocal.openSettings();"/>
+    </commandset>
+	
+	<menupopup id="places-files-popup">
+		<menu id="menu_remoteToLocal" insertafter="placesContextMenu_rename" label="Remote To Local">
+			<menupopup id="menu_paces_popup" label="remoteToLocal">
+				<menuitem id="menu_openInPlacesremoteToLocal_file"
+                  label="Sync with fileZilla"
+                  observes="Tasks:syncWithFileZilla"
+                  class="menu-iconic-wide" />
+			</menupopup>
+		</menu>
+	</menupopup>
+</overlay>

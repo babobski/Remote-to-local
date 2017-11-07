@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="less://komodo/skin/global/global.less" type="text/css"?>
+<?xml-stylesheet href="less://remoteToLocal/skin/remoteToLocal.less" type="text/css"?>
+
+<prefwindow id="less-prefs"
+     title="Open In FileZilla Preferences"
+	 width="300"
+	 height="140"
+	 class="modal"
+	 hidechrome="true"
+	 xmlns:html="http://www.w3.org/1999/xhtml"
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	
+	<prefpane id="less-pane" label="LESS Preferences">
+		<preferences>
+			<preference id="pref_locFileZilla" name="extensions.remoteToLocal.locFileZilla" type="string"/>
+		</preferences>
+		
+		<html:h3>
+			Location FileZilla executable
+		</html:h3>
+		<textbox id="locFileZilla" preference="pref_locFileZilla" />
+		
+	</prefpane>
+
+</prefwindow>

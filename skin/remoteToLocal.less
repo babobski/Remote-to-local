@@ -1,0 +1,25 @@
+@import url("chrome://komodo/skin/global/colors.less");
+@import url("resource://profile/colors.less"); 
+
+prefwindow,
+prefwindow:root {
+	-moz-binding: url("chrome://global/content/bindings/preferences.xml#prefwindow");
+}
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > vbox,
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > hbox,
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > box {
+	padding: 10px;
+}
+prefwindow > prefpane {	
+	padding: 10px;
+}
+
+h3 {
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
+
+
+
+

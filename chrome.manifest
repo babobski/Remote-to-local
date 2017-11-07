@@ -1,0 +1,5 @@
+content remoteToLocal content/
+overlay chrome://komodo/content/komodo.xul chrome://remoteToLocal/content/overlay.xul
+overlay chrome://komodo-places/content/places_panel.xul  chrome://remoteToLocal/content/overlay-places.xul
+
+skin remoteToLocal classic/1.0 skin/
