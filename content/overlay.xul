@@ -8,6 +8,8 @@
     <commandset id="allcommands">
 	  <command id="Tasks:openCurrentFileLocation" oncommand="extensions.remoteToLocal.openCurrentFileInFilezilla();"/>
 	  <command id="Tasks:syncWithFileZilla" oncommand="extensions.remoteToLocal.syncFolderWithFileZilla(this);"/>
+	  <command id="Tasks:syncWithWinSCP" oncommand="extensions.remoteToLocal.syncFolderWithWinSCP(this);"/>
+	  <command id="Tasks:searchInLocalDir" oncommand="extensions.remoteToLocal.searchInLocalDirectory(this);"/>
 	  <command id="Tasks:openSettings" oncommand="extensions.remoteToLocal.openSettings();"/>
     </commandset>
 

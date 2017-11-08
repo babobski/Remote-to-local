@@ -8,7 +8,9 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 	const { classes: Cc, interfaces: Ci } = Components;
 	
 	var notify = require("notify/notify"),
-		self = this;
+		self = this,
+		prefs = Components.classes["@mozilla.org/preferences-service;1"]
+		.getService(Components.interfaces.nsIPrefService).getBranch("extensions.remoteToLocal.");
 	
 	this.saveToLocalFile = function(){
 		var currentView = ko.views.manager.currentView,
@@ -68,14 +70,19 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 	};
 	
 	this.syncFolderWithFileZilla = function(){
-		var pathFileZilla = 'C:/Program Files/FileZilla FTP Client/filezilla.exe';
+		// TODO add to settings
+		var pathFileZilla = prefs.getCharPref('locFileZilla');
 		var RCS = Cc["@activestate.com/koRemoteConnectionService;1"].getService(Ci.koIRemoteConnectionService);
 		var item = ko.places.manager.getSelectedItem();
 		var file = item.file;
 		var currentProject = ko.projects.manager.currentProject,
 			patIO = require("sdk/fs/path");
 			
-		
+		if (pathFileZilla.length === 0) {
+			self.openWarning();
+			return false;
+		}
+			
 		if (file === undefined) {
 			return false;
 		}
@@ -101,12 +108,90 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 			
 			ko.run.output.kill();
 			ko.run.command('"' + pathFileZilla + '" ' + serverInfo.username +':"\"'+ serverInfo.password +'"\"@'+serverInfo.server+':'+serverInfo.port + serverPath + ' --local="' + parseddUrl + '"', { 
-				"runIn": 'command-output-window', //'no-console',
+				"runIn": 'no-console', // command-output-window
+				"openOutputWindow": false,	
+			});
+		}
+	};
+	
+	this.syncFolderWithWinSCP = function(){
+		var pathWinScp = prefs.getCharPref('locFileZilla');
+		var RCS = Cc["@activestate.com/koRemoteConnectionService;1"].getService(Ci.koIRemoteConnectionService);
+		var item = ko.places.manager.getSelectedItem();
+		var file = item.file;
+		var currentProject = ko.projects.manager.currentProject,
+			patIO = require("sdk/fs/path");
+			
+		if (pathWinScp.length === 0) {
+			self.openWarning();
+			return false;
+		}	
+		
+		if (file === undefined) {
+			return false;
+		}
+		
+		if (currentProject === null) {
+			return false;
+		}
+		
+		if (file.isRemoteFile) {
+			var serverInfo = RCS.getConnectionUsingUri(file.URI);
+			var serverPath = item.type === 'file'? file.dirName : (file.dirName + '/' + file.baseName);
+			var projectLiveD = currentProject.liveDirectory,
+			projectUrl = currentProject.url,
+			projectPath = patIO.dirname(projectUrl),
+			displayPath = file.displayPath;
+			
+			if (displayPath.indexOf(projectLiveD) == -1) {
+				return false;
+			}
+			var localMirrorUrl = projectPath + displayPath.substr(projectLiveD.length, displayPath.length),
+				parseddUrl = item.type === 'file' ? ko.uriparse.displayPath(patIO.dirname(localMirrorUrl)) : ko.uriparse.displayPath(localMirrorUrl);
+			
+			ko.run.output.kill();
+			// TODO /defaults /refresh
+			ko.run.command('"' + pathWinScp + '" ' + serverInfo.protocol + '://' + serverInfo.username +':"'+ serverInfo.password +'"@'+serverInfo.server+':'+serverInfo.port + ' /synchronize "' + parseddUrl + '" "' + serverPath + '"', { 
+				"runIn": 'command-output-window', // command-output-window / no-console
 				"openOutputWindow": true,	
 			});
 		}
+	};
+	
+	this.searchInLocalDirectory = function() {
+		var item = ko.places.manager.getSelectedItem();
+		var file = item.file;
+		var currentProject = ko.projects.manager.currentProject,
+			patIO = require("sdk/fs/path");
 		
+		if (file === undefined) {
+			return false;
+		}
 		
+		if (currentProject === null) {
+			return false;
+		}
+		
+		if (file.isRemoteFile) {
+			var projectLiveD = currentProject.liveDirectory,
+			projectUrl = currentProject.url,
+			projectPath = patIO.dirname(projectUrl),
+			displayPath = file.displayPath;
+			
+			if (displayPath.indexOf(projectLiveD) == -1) {
+				return false;
+			}
+			var localMirrorUrl = projectPath + displayPath.substr(projectLiveD.length, displayPath.length),
+				parseddUrl = item.type === 'file' ? patIO.dirname(localMirrorUrl) : localMirrorUrl;
+			var ctx = Cc["@activestate.com/koFindInFilesContext;1"].createInstance(Ci.koIFindInFilesContext);
+			ctx.type = Ci.koIFindContext.FCT_IN_FILES;
+			ctx.cwd = ko.uriparse.URIToLocalPath(parseddUrl);
+			
+			var searchTerm = ko.interpolate.interpolateString('%(ask:Search term)');
+			
+			ko.launch.findInFiles(searchTerm, parseddUrl);
+			//ko.find.findAllInFiles(window, ctx, searchTerm);
+		}
 	};
 	
 	this.createFileIfNotExist = function($url) {
@@ -161,7 +246,14 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 	
 	this.openSettings = function() {
 		var features = "chrome,titlebar,toolbar,centerscreen";
-		window.openDialog('chrome://remoteToLocal/content/pref-overlay.xul', "remoteToLocalSettings", features);
+		var defaultDir = Components.classes["@mozilla.org/file/directory_service;1"]
+		.getService( Components.interfaces.nsIProperties).get("CurProcD", Components.interfaces.nsIFile).path;
+		window.openDialog('chrome://remoteToLocal/content/pref-overlay.xul', "remoteToLocalSettings", features, {ko: ko, self: self, dir: defaultDir});
+	};
+	
+	this.openWarning = function() {
+		var features = "chrome,titlebar,toolbar,centerscreen";
+		window.openDialog('chrome://remoteToLocal/content/config-warning.xul', "remoteToLocalWarning", features, self);
 	};
 	
 	window.addEventListener('file_saved', self.saveToLocalFile);

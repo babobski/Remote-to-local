@@ -8,15 +8,25 @@
     <commandset id="allcommands">
 		<command id="Tasks:openCurrentFileLocation" oncommand="extensions.remoteToLocal.openCurrentFileInFilezilla();"/>
 		<command id="Tasks:syncWithFileZilla" oncommand="extensions.remoteToLocal.syncFolderWithFileZilla(this);"/>
+		<command id="Tasks:syncWithWinSCP" oncommand="extensions.remoteToLocal.syncFolderWithWinSCP(this);"/>
+		<command id="Tasks:searchInLocalDir" oncommand="extensions.remoteToLocal.searchInLocalDirectory(this);"/>
 		<command id="Tasks:openSettings" oncommand="extensions.remoteToLocal.openSettings();"/>
     </commandset>
 	
 	<menupopup id="places-files-popup">
 		<menu id="menu_remoteToLocal" insertafter="placesContextMenu_rename" label="Remote To Local">
 			<menupopup id="menu_paces_popup" label="remoteToLocal">
-				<menuitem id="menu_openInPlacesremoteToLocal_file"
+				<menuitem id="menu_item_sync_with_filezilla"
                   label="Sync with fileZilla"
                   observes="Tasks:syncWithFileZilla"
+                  class="menu-iconic-wide" />
+				<menuitem id="menu_item_sync_with_scp"
+                  label="Sync with Win SCP"
+                  observes="Tasks:syncWithWinSCP"
+                  class="menu-iconic-wide" />
+				<menuitem id="menu_item_search_in_local_directory"
+                  label="Search in local directory"
+                  observes="Tasks:searchInLocalDir"
                   class="menu-iconic-wide" />
 			</menupopup>
 		</menu>

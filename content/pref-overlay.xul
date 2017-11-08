@@ -4,24 +4,60 @@
 <?xml-stylesheet href="less://remoteToLocal/skin/remoteToLocal.less" type="text/css"?>
 
 <prefwindow id="less-prefs"
-     title="Open In FileZilla Preferences"
+     title="Remote to local Preferences"
 	 width="300"
-	 height="140"
+	 height="220"
 	 class="modal"
 	 hidechrome="true"
 	 xmlns:html="http://www.w3.org/1999/xhtml"
      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script>
+		var pWin = window.arguments[0],
+			ko = pWin.ko,
+			self = pWin.self,
+			dir = pWin.dir.replace(/ActiveState.*$/, '');
+		
+		function chooseFileZillaExecutable() {
+			var txtBx = document.getElementById('locFileZilla');
+			var newVal = ko.filepicker.browseForExeFile(dir, '',  'Choose FileZilla executable');
+			
+			if (newVal !== null) {
+				txtBx.value = newVal;
+			}
+			window.focus();
+		}
+		
+		function chooseFWinSCPExecutable() {
+			var txtBx = document.getElementById('locWinSCP');
+			var newVal = ko.filepicker.browseForExeFile(dir, '',  'Choose Win SCP executable');
+			
+			if (newVal !== null) {
+				txtBx.value = newVal;
+			}
+			window.focus();
+		}
+	</script>
 	
-	<prefpane id="less-pane" label="LESS Preferences">
+	<prefpane id="remoteToLocal-pane" label="Remote to lacal Preferences">
 		<preferences>
 			<preference id="pref_locFileZilla" name="extensions.remoteToLocal.locFileZilla" type="string"/>
+			<preference id="pref_locWinSCP" name="extensions.remoteToLocal.locWinSCP" type="string"/>
 		</preferences>
 		
 		<html:h3>
 			Location FileZilla executable
 		</html:h3>
-		<textbox id="locFileZilla" preference="pref_locFileZilla" />
+		<hbox>
+			<textbox flex="1" id="locFileZilla" preference="pref_locFileZilla" />
+			<button id="chooseLocFileZilla" onclick="chooseFileZillaExecutable();" label="..."/>
+		</hbox>
 		
+		<html:h3>
+			Location Win SCP executable
+		</html:h3>
+		<hbox>
+			<textbox flex="1" id="locWinSCP" preference="pref_locWinSCP" />
+			<button id="chooseLocWinSCP" onclick="chooseFWinSCPExecutable();" label="..."/>
+		</hbox>
 	</prefpane>
-
 </prefwindow>
