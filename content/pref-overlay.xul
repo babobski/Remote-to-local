@@ -3,7 +3,7 @@
 <?xml-stylesheet href="less://komodo/skin/global/global.less" type="text/css"?>
 <?xml-stylesheet href="less://remoteToLocal/skin/remoteToLocal.less" type="text/css"?>
 
-<prefwindow id="less-prefs"
+<prefwindow id="remoteToLocal-prefs"
      title="Remote to local Preferences"
 	 width="300"
 	 height="220"
@@ -15,6 +15,7 @@
 		var pWin = window.arguments[0],
 			ko = pWin.ko,
 			self = pWin.self,
+			prefs = pWin.prefs,
 			dir = pWin.dir.replace(/ActiveState.*$/, '');
 		
 		function chooseFileZillaExecutable() {
@@ -23,6 +24,7 @@
 			
 			if (newVal !== null) {
 				txtBx.value = newVal;
+				prefs.setCharPref('locFileZilla', newVal);
 			}
 			window.focus();
 		}
@@ -33,6 +35,7 @@
 			
 			if (newVal !== null) {
 				txtBx.value = newVal;
+				prefs.setCharPref('locWinSCP', newVal);
 			}
 			window.focus();
 		}

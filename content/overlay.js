@@ -115,7 +115,7 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 	};
 	
 	this.syncFolderWithWinSCP = function(){
-		var pathWinScp = prefs.getCharPref('locFileZilla');
+		var pathWinScp = prefs.getCharPref('locWinSCP');
 		var RCS = Cc["@activestate.com/koRemoteConnectionService;1"].getService(Ci.koIRemoteConnectionService);
 		var item = ko.places.manager.getSelectedItem();
 		var file = item.file;
@@ -150,10 +150,9 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 				parseddUrl = item.type === 'file' ? ko.uriparse.displayPath(patIO.dirname(localMirrorUrl)) : ko.uriparse.displayPath(localMirrorUrl);
 			
 			ko.run.output.kill();
-			// TODO /defaults /refresh
 			ko.run.command('"' + pathWinScp + '" ' + serverInfo.protocol + '://' + serverInfo.username +':"'+ serverInfo.password +'"@'+serverInfo.server+':'+serverInfo.port + ' /synchronize "' + parseddUrl + '" "' + serverPath + '"', { 
-				"runIn": 'command-output-window', // command-output-window / no-console
-				"openOutputWindow": true,	
+				"runIn": 'no-console', // command-output-window / no-console
+				"openOutputWindow": false,	
 			});
 		}
 	};
@@ -187,10 +186,7 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 			ctx.type = Ci.koIFindContext.FCT_IN_FILES;
 			ctx.cwd = ko.uriparse.URIToLocalPath(parseddUrl);
 			
-			var searchTerm = ko.interpolate.interpolateString('%(ask:Search term)');
-			
-			ko.launch.findInFiles(searchTerm, parseddUrl);
-			//ko.find.findAllInFiles(window, ctx, searchTerm);
+			ko.launch.findInFiles('', parseddUrl);
 		}
 	};
 	
@@ -248,7 +244,7 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 		var features = "chrome,titlebar,toolbar,centerscreen";
 		var defaultDir = Components.classes["@mozilla.org/file/directory_service;1"]
 		.getService( Components.interfaces.nsIProperties).get("CurProcD", Components.interfaces.nsIFile).path;
-		window.openDialog('chrome://remoteToLocal/content/pref-overlay.xul', "remoteToLocalSettings", features, {ko: ko, self: self, dir: defaultDir});
+		window.openDialog('chrome://remoteToLocal/content/pref-overlay.xul', "remoteToLocalSettings", features, {ko: ko, self: self, dir: defaultDir, prefs: prefs});
 	};
 	
 	this.openWarning = function() {
