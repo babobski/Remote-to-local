@@ -11,6 +11,9 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 		self = this,
 		prefs = Components.classes["@mozilla.org/preferences-service;1"]
 		.getService(Components.interfaces.nsIPrefService).getBranch("extensions.remoteToLocal.");
+		
+	window.removeEventListener('file_saved', self.saveToLocalFile);
+	window.removeEventListener('view_opened', self.openRemoteMirrorFile);
 	
 	this.saveToLocalFile = function(){
 		var currentView = ko.views.manager.currentView,
@@ -181,12 +184,12 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 				return false;
 			}
 			var localMirrorUrl = projectPath + displayPath.substr(projectLiveD.length, displayPath.length),
-				parseddUrl = item.type === 'file' ? patIO.dirname(localMirrorUrl) : localMirrorUrl;
+				parseddUrl = (item.type === 'file' ? patIO.dirname(localMirrorUrl) : localMirrorUrl).replace(/\\/g, '/');
 			var ctx = Cc["@activestate.com/koFindInFilesContext;1"].createInstance(Ci.koIFindInFilesContext);
 			ctx.type = Ci.koIFindContext.FCT_IN_FILES;
-			ctx.cwd = ko.uriparse.URIToLocalPath(parseddUrl);
+			ctx.cwd = ko.uriparse.displayPath(parseddUrl);
 			
-			ko.launch.findInFiles('', parseddUrl);
+			ko.launch.findInFiles('', ko.uriparse.displayPath(parseddUrl));
 		}
 	};
 	
@@ -219,11 +222,9 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 	};
 	
 	this.readFile = function(filepath) {
-	
 		var reader = Components.classes["@activestate.com/koFileEx;1"]
 			.createInstance(Components.interfaces.koIFileEx),
 			placeholder;
-	
 		reader.path = filepath;
 	
 		try {
@@ -240,6 +241,55 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 		return false;
 	};
 	
+	this.openRemoteMirrorFile = function() {
+		var openRemote = prefs.getBoolPref('openRemote');
+		
+		if (!openRemote) {
+			return false;
+		}
+		
+		var currentView = ko.views.manager.currentView,
+			currentProject = ko.projects.manager.currentProject,
+			patIO = require("sdk/fs/path");
+		if (currentView === null || currentProject === null) {
+			return false;
+		}
+		var koDoc = currentView.koDoc,
+			curFile = koDoc.file;
+		if (curFile === null) {
+			return false;
+		}
+		var projectLiveD = currentProject.liveDirectory,
+			projectUrl = currentProject.url,
+			projectPath = ko.uriparse.displayPath(patIO.dirname(projectUrl)),
+			displayPath = curFile.displayPath;
+			
+		if (!curFile.isRemoteFile && displayPath.indexOf(projectPath) !== -1) {
+			if (/(^ftp|^sftp|ftps)/.test(projectLiveD)) {
+				var remoteMirrorUrl = projectLiveD + displayPath.substr(projectPath.length, displayPath.length),
+					parseddUrl = ko.uriparse.displayPath(remoteMirrorUrl).replace(/\\/g, '/'); // Win fix
+				var reader = Components.classes["@activestate.com/koFileEx;1"]
+					.createInstance(Components.interfaces.koIFileEx),
+					placeholder;
+				
+				console.log(parseddUrl);
+				reader.path = parseddUrl;
+			
+				try {
+					reader.open("r");
+					placeholder = reader.readfile();
+					reader.close();
+					
+					currentView.close();
+					ko.open.URI(parseddUrl, 'editor');
+			
+				} catch (e) {
+					console.log(e);
+				}
+			}
+		}
+	};
+	
 	this.openSettings = function() {
 		var features = "chrome,titlebar,toolbar,centerscreen";
 		var defaultDir = Components.classes["@mozilla.org/file/directory_service;1"]
@@ -253,6 +303,7 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 	};
 	
 	window.addEventListener('file_saved', self.saveToLocalFile);
+	window.addEventListener('view_opened', self.openRemoteMirrorFile);
 	
 
 }).apply(extensions.remoteToLocal);

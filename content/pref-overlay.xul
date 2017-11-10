@@ -45,22 +45,20 @@
 		<preferences>
 			<preference id="pref_locFileZilla" name="extensions.remoteToLocal.locFileZilla" type="string"/>
 			<preference id="pref_locWinSCP" name="extensions.remoteToLocal.locWinSCP" type="string"/>
+			<preference id="pref_openRemote" name="extensions.remoteToLocal.openRemote" type="bool"/>
 		</preferences>
 		
-		<html:h3>
-			Location FileZilla executable
-		</html:h3>
+		<description value="Location FileZilla executable"/>
 		<hbox>
 			<textbox flex="1" id="locFileZilla" preference="pref_locFileZilla" />
 			<button id="chooseLocFileZilla" onclick="chooseFileZillaExecutable();" label="..."/>
 		</hbox>
 		
-		<html:h3>
-			Location Win SCP executable
-		</html:h3>
+		<description value="Location Win SCP executable"/>
 		<hbox>
 			<textbox flex="1" id="locWinSCP" preference="pref_locWinSCP" />
 			<button id="chooseLocWinSCP" onclick="chooseFWinSCPExecutable();" label="..."/>
 		</hbox>
+		<checkbox id="openRemote" label="Open the remote file when opening local files" preference="pref_openRemote" />
 	</prefpane>
 </prefwindow>

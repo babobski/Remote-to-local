@@ -6,7 +6,6 @@
 	<script type="application/x-javascript" src="chrome://remoteToLocal/content/overlay.js" />
 
     <commandset id="allcommands">
-		<command id="Tasks:openCurrentFileLocation" oncommand="extensions.remoteToLocal.openCurrentFileInFilezilla();"/>
 		<command id="Tasks:syncWithFileZilla" oncommand="extensions.remoteToLocal.syncFolderWithFileZilla(this);"/>
 		<command id="Tasks:syncWithWinSCP" oncommand="extensions.remoteToLocal.syncFolderWithWinSCP(this);"/>
 		<command id="Tasks:searchInLocalDir" oncommand="extensions.remoteToLocal.searchInLocalDirectory(this);"/>
@@ -27,6 +26,10 @@
 				<menuitem id="menu_item_search_in_local_directory"
                   label="Search in local directory"
                   observes="Tasks:searchInLocalDir"
+                  class="menu-iconic-wide" />
+				<menuitem id="menu_item_settings"
+                  label="Settings"
+                  observes="Tasks:openSettings"
                   class="menu-iconic-wide" />
 			</menupopup>
 		</menu>

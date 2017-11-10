@@ -6,14 +6,13 @@
 	<script type="application/x-javascript" src="chrome://remoteToLocal/content/overlay.js" />
 
     <commandset id="allcommands">
-	  <command id="Tasks:openCurrentFileLocation" oncommand="extensions.remoteToLocal.openCurrentFileInFilezilla();"/>
-	  <command id="Tasks:syncWithFileZilla" oncommand="extensions.remoteToLocal.syncFolderWithFileZilla(this);"/>
-	  <command id="Tasks:syncWithWinSCP" oncommand="extensions.remoteToLocal.syncFolderWithWinSCP(this);"/>
-	  <command id="Tasks:searchInLocalDir" oncommand="extensions.remoteToLocal.searchInLocalDirectory(this);"/>
-	  <command id="Tasks:openSettings" oncommand="extensions.remoteToLocal.openSettings();"/>
+		<command id="Tasks:syncWithFileZilla" oncommand="extensions.remoteToLocal.syncFolderWithFileZilla(this);"/>
+		<command id="Tasks:syncWithWinSCP" oncommand="extensions.remoteToLocal.syncFolderWithWinSCP(this);"/>
+		<command id="Tasks:searchInLocalDir" oncommand="extensions.remoteToLocal.searchInLocalDirectory(this);"/>
+		<command id="Tasks:openSettings" oncommand="extensions.remoteToLocal.openSettings();"/>
     </commandset>
 
-    <menupopup id="popup_tools">
+    <!--menupopup id="popup_tools">
       <menu id="menu_remoteToLocal" label="FileZilla">
         <menupopup id="menu_remoteToLocal_popup">
           <menuitem id="menu_remoteToLocal_file"
@@ -37,5 +36,5 @@
                     class="menu-iconic-wide" />
 		  </menupopup>
       </menu>
-    </menupopup>
+    </menupopup>-->
 </overlay>
