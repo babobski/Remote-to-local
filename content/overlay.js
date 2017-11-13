@@ -262,9 +262,11 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 		var projectLiveD = currentProject.liveDirectory,
 			projectUrl = currentProject.url,
 			projectPath = ko.uriparse.displayPath(patIO.dirname(projectUrl)),
-			displayPath = curFile.displayPath;
+			projectPathTest = projectPath.toLowerCase(),
+			displayPath = curFile.displayPath,
+			displayPathTest = displayPath.toLowerCase();
 			
-		if (!curFile.isRemoteFile && displayPath.indexOf(projectPath) !== -1) {
+		if (!curFile.isRemoteFile && displayPathTest.indexOf(projectPathTest) !== -1) {
 			if (/(^ftp|^sftp|ftps)/.test(projectLiveD)) {
 				var remoteMirrorUrl = projectLiveD + displayPath.substr(projectPath.length, displayPath.length),
 					parseddUrl = ko.uriparse.displayPath(remoteMirrorUrl).replace(/\\/g, '/'); // Win fix
@@ -272,7 +274,6 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 					.createInstance(Components.interfaces.koIFileEx),
 					placeholder;
 				
-				console.log(parseddUrl);
 				reader.path = parseddUrl;
 			
 				try {
