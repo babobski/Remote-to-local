@@ -262,11 +262,11 @@ if (typeof(extensions.remoteToLocal) === 'undefined') extensions.remoteToLocal =
 		var projectLiveD = currentProject.liveDirectory,
 			projectUrl = currentProject.url,
 			projectPath = ko.uriparse.displayPath(patIO.dirname(projectUrl)),
-			projectPathTest = projectPath.toLowerCase(),
+			projectPathParsed = require("sdk/url").URL(projectPath).toLowerCase(),
 			displayPath = curFile.displayPath,
-			displayPathTest = displayPath.toLowerCase();
+			displayPathParsed = require("sdk/url").URL(displayPath).toLowerCase();
 			
-		if (!curFile.isRemoteFile && displayPathTest.indexOf(projectPathTest) !== -1) {
+		if (!curFile.isRemoteFile && displayPathParsed.indexOf(projectPathParsed) !== -1) {
 			if (/(^ftp|^sftp|ftps)/.test(projectLiveD)) {
 				var remoteMirrorUrl = projectLiveD + displayPath.substr(projectPath.length, displayPath.length),
 					parseddUrl = ko.uriparse.displayPath(remoteMirrorUrl).replace(/\\/g, '/'); // Win fix
